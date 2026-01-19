@@ -2,6 +2,8 @@
 
 Optimized tool for asking users to choose between multiple approaches. Returns **pure JSON** output for reliable LLM integration and parsing.
 
+**Note**: This is a local custom tool. Amp also has a built-in `tb__ask_user` tool, but it has rendering issues with options. Use this tool when you need reliable option display.
+
 ## Usage
 
 ### Define Tool Description (for toolbox registration)
