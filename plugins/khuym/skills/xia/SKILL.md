@@ -1,6 +1,12 @@
 ---
 name: xia
-description: Research-first feature discovery for unfamiliar, ambiguous, or high-risk implementation work. Use when Codex should map the real repo stack, find reusable local code, check upstream patterns, and verify current official docs before planning or implementing a feature.
+description: >-
+  Investigates an unfamiliar or ambiguous codebase before implementation by
+  identifying frameworks, libraries, and architectural patterns in the
+  repository, searching for reusable local code, checking upstream patterns,
+  and verifying current official documentation. Use when exploring a new
+  codebase, spiking a feature request, investigating before coding, or
+  performing research-first discovery on high-risk or unfamiliar work.
 metadata:
   dependencies:
     - id: exa
@@ -264,34 +270,41 @@ Ask a targeted follow-up question only when one of these is true:
 
 Otherwise, make the best evidence-backed recommendation and move forward.
 
-## Guardrails
+## Guardrails and Red Flags
 
-- Do not guess the stack from folder names alone.
-- Do not guess the repo type from branding, naming, or prior memory alone.
-- Do not stop at docs if manifests, configs, scripts, or tests would refine the picture.
-- Do not claim something is missing until the local repo search says it is missing.
-- Do not treat `deepwiki` availability as required for progress.
-- Do not use stale or version-mismatched docs without saying so.
-- Do not blur local findings, upstream findings, docs findings, and inference together.
-- Do not give generic advice that is not anchored to the detected stack.
-- Do not start coding before the research brief unless the user explicitly waives research.
-- Do not recommend a path without explaining why the stronger-looking alternatives were rejected.
+Stop and correct course if any of these apply:
 
-## Red Flags
-
-Stop and correct course immediately if you catch yourself doing any of these:
-
-- summarizing the stack before reading the files that prove it
-- saying "this repo probably uses X" without artifact evidence
-- jumping to web research because local search feels slower
-- treating `deepwiki` or indexing gaps as a reason to skip upstream research entirely
-- citing blogs or AI summaries when official docs are available
-- starting to design or code before the brief is complete
-- collapsing `Local`, `Upstream`, `Docs`, and `Inference` into one blended narrative
+- Guessing the stack from folder names, branding, or prior memory instead of reading manifests and configs
+- Claiming something is missing without checking local code, config, docs, and test surfaces
+- Jumping to web research before completing local inspection
+- Treating `deepwiki` or `exa` unavailability as a reason to block progress
+- Using stale or version-mismatched docs without flagging the mismatch
+- Blurring `Local`, `Upstream`, `Docs`, and `Inference` labels into one narrative
+- Starting to design or code before the research brief is complete
+- Recommending a path without explaining why alternatives were rejected
+- Citing blogs or AI summaries when official docs are available
 
 ## Quick Smell Test
 
 If the brief does not clearly answer "what exists, what is reusable, what the docs say, and what path to take," it is not done yet.
+
+## Example Brief Excerpt
+
+```markdown
+**Bottom line:** The repo already has a webhook handler in `src/webhooks/`.
+Extend it rather than building a new ingestion endpoint.
+
+**Stack:** Node 20 + Express 4.18 + TypeScript 5.3 (from package.json)
+**Local [Local]:** `src/webhooks/stripe.ts` handles Stripe events — same
+  pattern applies to the requested Slack integration.
+**Upstream [Upstream]:** Slack's bolt-js SDK v3 includes built-in event
+  verification middleware.
+**Docs [Docs]:** Official Slack API docs recommend socket mode for dev,
+  HTTP mode for production (docs.api.slack.com, v3 stable).
+**Recommendation:** Add a `src/webhooks/slack.ts` handler following the
+  existing Stripe pattern, using bolt-js HTTP mode.
+  *Why not socket mode:* repo is deployed as a stateless container (Dockerfile).
+```
 
 ## References
 

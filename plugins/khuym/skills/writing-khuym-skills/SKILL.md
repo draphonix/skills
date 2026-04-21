@@ -1,6 +1,13 @@
 ---
 name: writing-khuym-skills
-description: Use when creating a new khuym skill, editing an existing khuym skill, or verifying a skill works under pressure before deploying. Use when you need an agent skill to be bulletproof against rationalization. Do NOT use for project-specific AGENTS.md conventions or one-off solutions.
+description: >-
+  Generates khuym skill markdown files using TDD-for-skills methodology:
+  writes pressure-test scenarios first, builds minimal SKILL.md to pass them,
+  then iterates to close rationalization loopholes. Use when creating a new
+  khuym skill, editing an existing skill, writing a skill template, validating
+  skill behavior under pressure, or testing skill instructions against
+  adversarial prompts. Do NOT use for project-specific AGENTS.md conventions
+  or one-off solutions.
 metadata:
   dependencies: []
 ---
@@ -12,8 +19,6 @@ If `.khuym/onboarding.json` is missing or stale for the current repo, stop and i
 ## Overview
 
 Skills are code. They have bugs. Test them before deploying.
-
-This is the TDD-for-skills methodology adapted from Superpowers (N=28,000 scale testing confirms persuasion-optimized skills produce 3-4× better agent compliance than plain instructions).
 
 **THE IRON LAW: NO SKILL WITHOUT A FAILING TEST FIRST.**
 Write skill before testing? Delete it. Start over. No exceptions — not for "simple additions," not for "just a section," not for "reference only."
@@ -42,8 +47,6 @@ When NOT to use: AGENTS.md files, project-specific conventions, one-off prompt i
 ## PHASE 1 — RED: Write the Failing Test
 
 **HARD-GATE: Do not write any skill content until you complete this phase.**
-
-Teams that skip baseline testing consistently deploy skills with predictable, preventable failures.
 
 **Steps:**
 1. Define the skill's purpose: what behavior must it enforce? What are failure modes without it?
@@ -156,32 +159,21 @@ If the edited skill owns a repo-local test script, run that too.
 
 ---
 
-## Rationalization Table (Common Violations)
+## Red Flags — Rationalization Checklist
 
-| Excuse | Reality |
+If you catch yourself or the agent saying any of these, stop and run baseline tests:
+
+| Rationalization | Why It Fails |
 |---|---|
-| "I know this technique, testing is unnecessary" | You're testing the SKILL, not your knowledge. Agents differ from you. |
-| "It's so simple it can't have bugs" | Every untested skill has issues. Test takes 30 minutes. |
+| "Testing is unnecessary — I know this technique" | You're testing the SKILL, not your knowledge. Agents differ from you. |
+| "It's so simple it can't have bugs" | Every untested skill has issues. |
 | "Academic questions passed — that's sufficient" | Reading a skill ≠ using a skill under pressure. Test application scenarios. |
-| "My description summarizes the workflow so agents know what to do" | Workflow-summary descriptions cause agents to skip the skill body. Remove it. |
-| "This edit is minor — testing isn't needed" | The Iron Law applies to edits. No exceptions. |
-| "I'll test it after a few real uses" | Problems = agents misuse in production. Test BEFORE deploying. |
-| "The baseline is obvious, I know what failures to expect" | You know YOUR failures. Agent failures differ. Run the baseline. |
+| "My description summarizes the workflow" | Workflow-summary descriptions cause agents to skip the skill body. |
+| "This edit is minor" | The Iron Law applies to edits. No exceptions. |
+| "I'll test it after a few real uses" | Test BEFORE deploying — not in production. |
+| "The baseline is obvious" | You know YOUR failures. Agent failures differ. Run the baseline. |
 
----
-
-## Red Flags — STOP and Run Baseline Tests
-
-- Writing skill content before creating any pressure scenarios
-- "I already know what agents will do"
-- "It's just a small addition"
-- "Academic questions passed, that's sufficient testing"
-- Description contains workflow steps or process summary
-- Skill addresses hypothetical scenarios not observed in baseline
-- Deploying without running scenarios WITH skill (no green verification)
-- "The skill was good last month, edits don't need testing"
-
-**All of these mean: Stop. Run baseline tests first.**
+Also stop if: writing skill content before creating pressure scenarios, addressing hypothetical scenarios not observed in baseline, or deploying without running scenarios WITH skill.
 
 ---
 
@@ -190,5 +182,4 @@ If the edited skill owns a repo-local test script, run that too.
 Load when needed:
 - `references/creation-log-template.md` — CREATION-LOG.md template for documenting the TDD process
 - `references/pressure-test-template.md` — Pressure scenario templates and the 7 pressure types
-
-**Background:** The TDD-for-skills methodology originates from the Superpowers framework (obra/superpowers). Persuasion research: Meincke et al. (2025), N=28,000 LLM conversations, University of Pennsylvania. Compliance methodology validated by ComplexBench, PromptAgent, and RNR studies (see research/15-tdd-skills-methodology.md for full citations).
+- `research/15-tdd-skills-methodology.md` — Full background citations and methodology details

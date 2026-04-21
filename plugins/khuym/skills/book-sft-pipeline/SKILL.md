@@ -1,62 +1,20 @@
 ---
 name: book-sft-pipeline
-description: Use when the user asks to fine-tune on books, create an SFT dataset from books, train a style-transfer or author-voice model, extract ePub text, segment long-form book content, or prepare literary data for LoRA or small-model training.
+description: >-
+  Extracts text from ePub files, segments long-form book content into
+  training-ready chunks, generates diverse synthetic instructions, and
+  formats literary data into SFT/LoRA-ready JSONL datasets for style-transfer
+  model training. Use when the user asks to fine-tune on books, create an SFT
+  dataset, train a style-transfer or author-voice model, extract ePub text,
+  segment book content, or prepare literary data for LoRA or small-model
+  training.
 metadata:
   dependencies: []
 ---
 
 # Book SFT Pipeline
 
-A complete system for converting books into SFT datasets and training style-transfer models. This skill teaches the pipeline from raw ePub to a model that writes in any author's voice.
-
-## When to Activate
-
-Activate this skill when:
-- Building fine-tuning datasets from literary works
-- Creating author-voice or style-transfer models
-- Preparing training data for Tinker or similar SFT platforms
-- Designing text segmentation pipelines for long-form content
-- Training small models (8B or less) on limited data
-
-## Core Concepts
-
-### The Three Pillars of Book SFT
-
-**1. Intelligent Segmentation**
-Text chunks must be semantically coherent. Breaking mid-sentence teaches the model to produce fragmented output. Target: 150-400 words per chunk, always at natural boundaries.
-
-**2. Diverse Instruction Generation**
-Use multiple prompt templates and system prompts to prevent overfitting. A single prompt style leads to memorization. Use 15+ prompt templates with 5+ system prompts.
-
-**3. Style Over Content**
-The goal is learning the author's rhythm and vocabulary patterns, not memorizing plots. Synthetic instructions describe what happens without quoting the text.
-
-## Pipeline Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    ORCHESTRATOR AGENT                           │
-│  Coordinates pipeline phases, manages state, handles failures   │
-└──────────────────────┬──────────────────────────────────────────┘
-                       │
-       ┌───────────────┼───────────────┬───────────────┐
-       ▼               ▼               ▼               ▼
-┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-│  EXTRACTION  │ │ SEGMENTATION │ │  INSTRUCTION │ │   DATASET    │
-│    AGENT     │ │    AGENT     │ │    AGENT     │ │   BUILDER    │
-│ ePub → Text  │ │ Text → Chunks│ │ Chunks →     │ │ Pairs →      │
-│              │ │ 150-400 words│ │ Prompts      │ │ JSONL        │
-└──────────────┘ └──────────────┘ └──────────────┘ └──────────────┘
-                       │
-       ┌───────────────┴───────────────┐
-       ▼                               ▼
-┌──────────────┐               ┌──────────────┐
-│   TRAINING   │               │  VALIDATION  │
-│    AGENT     │               │    AGENT     │
-│ LoRA on      │               │ AI detector  │
-│ Tinker       │               │ Originality  │
-└──────────────┘               └──────────────┘
-```
+Converts books into SFT datasets and trains style-transfer models. Pipeline: raw ePub → segmented text → diverse synthetic instructions → JSONL dataset → LoRA fine-tuned model.
 
 ## Phase 1: Text Extraction
 
@@ -309,48 +267,6 @@ Test outputs with GPTZero, Pangram, or ZeroGPT.
 | Tinker training (15 min) | ~$1.50 |
 | **Total** | **~$2.00** |
 
-## Integration with Context Engineering Skills
-
-This example applies several skills from the Agent Skills for Context Engineering collection:
-
-### project-development
-The pipeline follows the staged, idempotent architecture pattern:
-- **Acquire**: Extract text from ePub
-- **Prepare**: Segment into training chunks
-- **Process**: Generate synthetic instructions
-- **Parse**: Build message format
-- **Render**: Output Tinker-compatible JSONL
-- **Train**: LoRA fine-tuning
-- **Validate**: Modern scenario testing
-
-Each phase is resumable and produces intermediate artifacts for debugging.
-
-### context-compression
-Segmentation is a form of context compression for training. The core insight from context-compression applies: information density matters more than information quantity. Smaller, coherent chunks (150-400 words) produce better style transfer than larger, diluted chunks.
-
-The two-tier strategy mirrors context compression evaluation:
-- Tier 1: Fast, deterministic compression
-- Tier 2: LLM-assisted for edge cases
-
-### multi-agent-patterns
-The pipeline uses the **supervisor/orchestrator** pattern:
-- Orchestrator coordinates phases and manages state
-- Specialized agents (Extraction, Segmentation, Instruction, Builder) have isolated contexts
-- Each agent receives only the information needed for its task
-
-This matches the principle that sub-agents exist primarily to isolate context rather than simulate roles.
-
-### evaluation
-Validation follows the **end-state evaluation** pattern:
-- Functional testing: Does output match expected style markers?
-- Originality verification: Is content genuinely generated?
-- External validation: AI detector scores
-
-The "modern scenario" test is a form of out-of-distribution evaluation that proves generalization.
-
-### context-fundamentals
-Prompt diversity prevents attention collapse on single patterns. When training with identical prompt structures, the model memorizes the instruction-response mapping. Diverse templates force attention across the style patterns themselves.
-
 ## References
 
 Internal references:
@@ -358,24 +274,7 @@ Internal references:
 - [Tinker Format Specification](./references/tinker-format.md) - Datum structure
 - [Tinker API Documentation](./references/tinker.txt) - Full API reference
 
-Related skills from Agent Skills for Context Engineering:
-- project-development - Pipeline architecture patterns
-- context-compression - Compression strategies  
-- multi-agent-patterns - Agent coordination
-- evaluation - Evaluation frameworks
-- context-fundamentals - Attention and information density
-
 External resources:
 - [Research Paper](https://arxiv.org/pdf/2510.13939) - Chakrabarty et al. 2025
 - [Dataset on Hugging Face](https://huggingface.co/datasets/MuratcanKoylan/gertrude-stein-style-sft)
 - [Gertrude Stein Case Study](./examples/gertrude-stein/) - Complete working example
-
----
-
-## Skill Metadata
-
-**Created**: 2025-12-26
-**Last Updated**: 2025-12-28
-**Author**: Muratcan Koylan
-**Version**: 2.0.0
-**Standalone**: Yes (separate from main context-engineering collection)

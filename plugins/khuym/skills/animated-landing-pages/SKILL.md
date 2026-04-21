@@ -1,6 +1,13 @@
 ---
 name: animated-landing-pages
-description: Use when designing or implementing a premium animated landing page with AI-generated visuals or looping video, especially when the workflow involves Higgfield-style image and video generation, Google AI Studio-style code prompting, React or Tailwind landing-page implementation, dark-mode video blending, scroll-tied playback, aspect-ratio-matched media blocks, or motion-first section design.
+description: >-
+  Designs and implements premium animated landing pages with AI-generated
+  visuals and looping video backgrounds. Use when building a hero section
+  with video background, creating a marketing page with motion-first design,
+  implementing scroll-tied playback, blending dark-mode video into layouts,
+  generating animated media for promotional websites, or building React or
+  Tailwind landing pages with aspect-ratio-matched media blocks and motion
+  effects.
 metadata:
   dependencies: []
 ---
@@ -70,35 +77,72 @@ Use this skill to turn a motion-first landing-page concept into a working site w
 3. Check loop seams, poster flashes, overlay banding, and container aspect-ratio mismatches.
 4. Confirm final asset hosting is stable and not relying on expiring generation URLs.
 
-## Implementation Guidance
+## Implementation Patterns
 
-### Use the tutorial as a pattern, not a prison
+### CSS overlay for dark video blending
 
-The source walkthrough uses Higgfield, Google AI Studio, Pinterest, Motionsites, and Land-book. Reuse that sequence when it helps, but adapt it to the current repo and available tools. The durable lessons are:
+```css
+.video-section {
+  position: relative;
+}
+.video-section::before,
+.video-section::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 120px;
+  z-index: 1;
+  pointer-events: none;
+}
+.video-section::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--bg-dark), transparent);
+}
+.video-section::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--bg-dark), transparent);
+}
+```
 
-- gather references before prompting
-- generate stills before videos
-- match media ratios to layout slots
-- prompt for layout and theme intentionally
-- integrate motion only where it supports the page story
+### Scroll-tied playback throttle
 
-### Keep the site coherent
+```js
+const video = document.querySelector('.scroll-video');
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      const rect = video.getBoundingClientRect();
+      const progress = 1 - (rect.bottom / (rect.height + window.innerHeight));
+      video.currentTime = Math.max(0, Math.min(video.duration, progress * video.duration));
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+```
 
-If the hero establishes a premium crypto or futuristic aesthetic, keep the rest of the page in the same family. Lower sections should feel like continuations of the hero, not a separate template.
+### Aspect-ratio container
 
-### Use static sections intentionally
+```css
+.media-block {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 1rem;
+}
+.media-block video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+```
 
-Not every section needs motion. Static sections create contrast and protect performance. Reserve the heaviest motion for the hero and one or two supporting sections.
+### Key principles
 
-### Escalate only when the choice changes the build
-
-Ask one short clarification question only when a decision materially changes the asset plan, such as:
-
-- whether the page should be dark or light
-- whether media can be AI-generated or must use provided brand assets
-- whether scroll-tied video is desired or normal looped playback is enough
-
-Otherwise, proceed with a reasonable default and state the assumption after the work.
+- Gather references before prompting; generate stills before videos.
+- Keep the site coherent — lower sections should feel like continuations of the hero, not a separate template.
+- Use static sections for contrast and performance. Reserve heavy motion for the hero and one or two supporting sections.
+- Only escalate when a decision materially changes the asset plan (dark vs light, AI-generated vs brand assets, scroll-tied vs looped playback).
 
 ## References
 
