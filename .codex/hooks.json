@@ -14,6 +14,16 @@
     ],
     "PreToolUse": [
       {
+        "matcher": "create_goal|set_goal|set_goals|goal",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .codex/hooks/goal_guard.mjs",
+            "statusMessage": "Goal Guard: LLM goal review"
+          }
+        ]
+      },
+      {
         "matcher": "Bash",
         "hooks": [
           {

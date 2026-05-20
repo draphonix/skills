@@ -358,6 +358,35 @@ test("pre-tool hook warns instead of blocking when agent identity is unavailable
   }
 });
 
+test("Khuym onboarding does not install the general goal guard as a Khuym hook", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "khuym-no-goal-guard-"));
+
+  try {
+    applyRepo(root, false);
+
+    const hooksJson = JSON.parse(fs.readFileSync(path.join(root, ".codex", "hooks.json"), "utf8"));
+    const preToolUse = hooksJson.hooks.PreToolUse || [];
+
+    assert.equal(
+      preToolUse.some((entry) => String(entry.matcher || "").includes("goal")),
+      false,
+    );
+
+    const payload = runPreToolUseHook(root, {
+      cwd: root,
+      tool_name: "create_goal",
+      tool_input: {
+        objective: "Improve the app.",
+      },
+    });
+
+    assert.equal(payload.continue, true);
+    assert.equal(payload.systemMessage, undefined);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("installed khuym_status reports gkg readiness for a supported indexed repo", async () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "khuym-gkg-"));
   const mockServer = await startMockGkgServer({
