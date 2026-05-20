@@ -1,0 +1,4 @@
+interface:
+  display_name: "Smart Commits"
+  short_description: "Group, commit, and push current changes"
+  default_prompt: "Use $smart-commits to group the current working tree into logical commits and push them."

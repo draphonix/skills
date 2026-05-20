@@ -244,6 +244,7 @@ Standalone skills remain available, but they are intentionally secondary to the 
 | `concept-game-builder` | Turn concepts and tutorials into educational browser games |
 | `prompt-leverage` | Upgrade raw prompts into stronger execution-ready prompts |
 | `refresh-project-docs` | Refresh README and docs so they match the current repo state |
+| `smart-commits` | Group, commit, and push existing changes as a clean commit stack |
 | `visual-learner` | Turn difficult topics into interactive HTML visual explainers |
 | `xia` | Research feature requests before implementation to avoid reinventing existing patterns |
 
