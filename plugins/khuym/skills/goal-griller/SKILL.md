@@ -1,8 +1,6 @@
 ---
 name: goal-griller
-description: Use when the user wants to turn a rough idea, vague task, feature wish, bug-fix intent, or Codex /goal objective into a clear verifiable goal prompt. Use when the user mentions goal mode, /goal, set_goal, long-running autonomous Codex work, or asks to be interviewed/grilled before creating a goal.
-metadata:
-  dependencies: []
+description: Turn vague ideas into verifiable Codex goals. Use when the user mentions goal mode, /goal, create_goal, autonomous work, or asks for an interview before goal creation.
 ---
 
 # Goal Griller

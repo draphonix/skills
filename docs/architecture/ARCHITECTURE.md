@@ -1,119 +1,73 @@
-# Khuym Architecture
+# Khuym Plugin Architecture
 
-Canonical architecture and vocabulary contract for the Khuym plugin shipped from this repo.
+Khuym is a collection of independent meta-skills, not a software-delivery workflow.
 
-If a skill doc and this file disagree, update the skill doc to match this file.
+## Canonical Sources
 
-## Canonical Layout
+- Plugin manifest: [`plugins/khuym/.codex-plugin/plugin.json`](../../plugins/khuym/.codex-plugin/plugin.json)
+- Optional MCP services: [`plugins/khuym/.mcp.json`](../../plugins/khuym/.mcp.json)
+- Canonical skill tree: [`plugins/khuym/skills/`](../../plugins/khuym/skills/)
+- Marketplace entry: [`.agents/plugins/marketplace.json`](../../.agents/plugins/marketplace.json)
 
-- The live canonical skill tree is [`plugins/khuym/skills/`](../../plugins/khuym/skills).
-- Codex consumes the packaged plugin from [`plugins/khuym/.codex-plugin/plugin.json`](../../plugins/khuym/.codex-plugin/plugin.json).
-- The repo marketplace is [`.agents/plugins/marketplace.json`](../../.agents/plugins/marketplace.json).
-- Optional raw skill mirrors are generated directly from the canonical skill tree via [`scripts/sync-skills.sh`](../../scripts/sync-skills.sh).
+Raw mirrors created by `scripts/sync-skills.sh` point back to the canonical skill tree.
 
-Author and maintain skills in `plugins/khuym/skills/*`; packaging and raw mirrors should resolve back to that tree.
+## Design Invariants
 
-## Core Principles
+1. Each skill must be directly invokable.
+2. No skill may require another Khuym skill to run first or next.
+3. No shared Khuym state directory, lifecycle phase, handoff file, issue tracker, or approval gate is required.
+4. Skills may compose when the user's task benefits, but composition is optional.
+5. Local repository evidence outranks generic workflow assumptions.
 
-Khuym keeps these invariants:
+## Skill Boundaries
 
-- `CONTEXT.md` is the source of truth for locked decisions.
-- `validating` is a real execution gate, not an optional review step.
-- beads + `bv` + Codex subagents + local reservations are the coordination substrate.
-- `swarming` is the orchestrator role and `executing` is the worker role.
-- `reviewing` and `compounding` are first-class phases, not cleanup afterthoughts.
+| Skill | Input boundary | Output boundary |
+|---|---|---|
+| `prompt-leverage` | A raw prompt | A stronger prompt or reusable prompt template |
+| `goal-griller` | A vague autonomous-work objective | A verifiable goal prompt; it does not silently start the goal |
+| `xia` | An unfamiliar or risky feature question | A research brief; it does not implement unless research is waived |
+| `sequence-execution-plan` | A goal, backlog, incident, or rough proposal | A dependency-aware execution plan; it does not create tracker state |
+| `smart-commits` | An existing Git working tree | Logical commits and an optional push; it does not implement features |
 
-## Working Modes
+These output boundaries prevent one skill from growing into a replacement workflow. For example, Xia stops at evidence and recommendation. The user can then plan normally, invoke `sequence-execution-plan`, or choose another path.
 
-Khuym presents three user-facing modes over the same core workflow:
-
-- `small_change` — bounded, low-risk work with lightweight planning and validating
-- `standard_feature` — the default full Khuym workflow; may use phases or epics
-- `high_risk_feature` — defaults to epic maps, feasibility proof, and stronger spike discipline
-
-Modes change the amount of ceremony, not the core contract. `validating` still gates execution in every mode.
-
-## Main Chain
+## Optional Composition
 
 ```text
-using-khuym
-  -> exploring
-  -> planning
-  -> validating
-  -> swarming
-  -> executing
-  -> reviewing
-  -> compounding
+                       ┌───────────────┐
+rough request ────────▶│ goal-griller  │
+                       └───────┬───────┘
+                               │ verifiable outcome
+                               ▼
+                       ┌───────────────┐
+                       │      xia      │
+                       └───────┬───────┘
+                               │ evidence and recommendation
+                               ▼
+                       ┌─────────────────────────┐
+                       │ sequence-execution-plan │
+                       └───────────┬─────────────┘
+                                   │ ordered work
+                                   ▼
+                         ordinary implementation
+                                   │
+                                   ▼
+                       ┌─────────────────┐
+                       │ smart-commits   │
+                       └─────────────────┘
 ```
 
-Behavioral summary:
+Every arrow is optional. A user asking only for a commit cleanup should enter directly at `smart-commits`.
 
-- `using-khuym` bootstraps, routes, explains modes, and handles resume/startup logic
-- `exploring` extracts decisions and writes `history/<feature>/CONTEXT.md`
-- `planning` turns those decisions into discovery, approach, a mode gate, work-shape artifacts, and approved current story/work prep
-- `validating` proves the chosen shape fits repo reality, feasibility evidence exists, and the current story/work is ready before execution starts
-- `swarming` launches and tends workers through Codex subagents, the parent thread, and the live bead graph
-- `executing` is the per-worker loop: claim, reserve locally, implement, verify, close, report
-- `reviewing` performs specialist review, artifact verification, and the merge gate
-- `compounding` records durable learnings in `history/learnings/`
+## External Services
 
-## Runtime Artifacts
+Only `xia` benefits from plugin-provided MCP services:
 
-Khuym keeps runtime state local and file-based:
+- Exa for current web and official-documentation research
+- DeepWiki for best-effort public repository pattern research
 
-```text
-.khuym/
-  onboarding.json   -> onboarding state for the plugin
-  state.json        -> single runtime state file for routing, focus, blockers, and summaries
-  HANDOFF.json      -> pause/resume artifact
-  reservations.json -> local file reservations for same-session Codex swarms
+Neither service is a plugin-wide gate. If one is unavailable, Xia records the evidence gap and uses another available browser, search, or direct repository path.
 
-.codex/
-  khuym_status.mjs -> read-only scout command
-  khuym_state.mjs -> shared scout/state helpers
-  khuym_reservations.mjs -> local reservation helper used by swarming, executing, and hooks
-```
+## Repository Development Hooks
 
-Rules:
-
-- `state.json` is the single runtime state file for tools, agents, and operator-facing summaries
-- neither `state.json` nor `HANDOFF.json` replaces `CONTEXT.md`, beads, feasibility evidence, or planning artifacts
-- workflow transitions should update `state.json` directly instead of maintaining a second narrative file
-
-## Session Scout
-
-On onboarded repos, Khuym installs a read-only scout command:
-
-```bash
-node .codex/khuym_status.mjs --json
-```
-
-This is the preferred quick orientation step for both humans and agents. It summarizes:
-
-- onboarding status
-- `.khuym/state.json`
-- `.khuym/HANDOFF.json`
-- recommended next reads/actions
-
-The scout command is a shortcut for orientation. It does not replace deeper reads of `CONTEXT.md`, planning artifacts, feasibility evidence, beads, or review outputs.
-
-## Startup Contract
-
-On normal Khuym sessions:
-
-1. Read `AGENTS.md`
-2. If present, run `node .codex/khuym_status.mjs --json`
-3. Read `.khuym/HANDOFF.json` if resuming
-4. Read `.khuym/state.json`
-5. Re-open the active feature `CONTEXT.md`
-6. Read `history/learnings/critical-patterns.md` before planning or execution when it exists
-
-## Verification Expectations
-
-Public-doc changes in this repo should pass:
-
-```bash
-bash scripts/check-markdown-links.sh
-bash scripts/sync-skills.sh --dry-run
-bash scripts/sync-skills.sh --target all --dry-run
-```
+The repository keeps one local `PreToolUse` hook for goal quality. It can redirect an under-specified goal request toward `goal-griller`. Session bootstrap, shell reservation, state recovery, and stop hooks from the retired workflow are not part of the architecture.

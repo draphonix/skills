@@ -1,13 +1,6 @@
 ---
 name: smart-commits
-description: Use when the user asks to commit everything, smart commit, group commits, organize staged or unstaged changes, create logical commits, push current work, or preserve a clean commit stack from an existing working tree.
-metadata:
-  dependencies:
-    git-cli:
-      kind: command
-      command: git
-      missing_effect: unavailable
-      reason: The skill inspects repository changes, creates commits, and pushes through git.
+description: Organize an existing Git tree into logical commits and push them. Use when asked to commit everything, smart commit, group changes, clean the commit stack, or push work.
 ---
 
 # Smart Commits

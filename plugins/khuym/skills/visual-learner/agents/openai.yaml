@@ -1,4 +1,0 @@
-interface:
-  display_name: "Visual Learner"
-  short_description: "Build interactive HTML explainers"
-  default_prompt: "Use $visual-learner to turn this concept into a self-contained interactive HTML explainer."

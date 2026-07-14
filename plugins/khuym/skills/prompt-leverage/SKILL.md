@@ -1,13 +1,9 @@
 ---
 name: prompt-leverage
-description: Strengthen a raw user prompt into an execution-ready instruction set for Codex or another AI agent. Use when the user wants to improve an existing prompt, build a reusable prompting framework, wrap the current request with better structure, add clearer tool rules, or create a hook that upgrades prompts before execution.
-metadata:
-  dependencies: []
+description: Upgrade raw prompts into execution-ready instructions. Use when asked to improve a prompt, add context, tool, verification, or done rules, extract a template, or design an enhancement hook.
 ---
 
 # Prompt Leverage
-
-If `.khuym/onboarding.json` is missing or stale for the current repo, stop and invoke `khuym:using-khuym` before continuing.
 
 Turn the user's current prompt into a stronger working prompt without changing the underlying intent. Preserve the task, fill in missing execution structure, and add only enough scaffolding to improve reliability.
 

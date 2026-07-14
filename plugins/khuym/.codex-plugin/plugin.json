@@ -1,7 +1,7 @@
 {
   "name": "khuym",
-  "version": "3.0.9",
-  "description": "Khuym: validate-first multi-agent skills for planning, sequencing, swarming, execution, visual learning artifacts, and smart commits",
+  "version": "4.0.0",
+  "description": "Khuym: focused meta-skills for prompting, goal shaping, research, execution sequencing, and smart commits",
   "author": {
     "name": "hoangnb24",
     "url": "https://github.com/hoangnb24"
@@ -12,34 +12,32 @@
   "keywords": [
     "khuym",
     "skills",
-    "agentic-development",
-    "planning",
-    "multi-agent"
+    "meta-skills",
+    "prompting",
+    "research",
+    "planning"
   ],
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
-    "displayName": "Khuym",
-    "shortDescription": "Validate-first skills for agentic software delivery",
-    "longDescription": "Bundles the Khuym workflow skills and standalone utilities for phase planning, dependency-aware sequencing, story mapping, validation, swarming, review, visual learning artifacts, smart commits, and learning capture.",
+    "displayName": "Khuym Meta-Skills",
+    "shortDescription": "Portable meta-skills for stronger agent work",
+    "longDescription": "Five independent skills for improving prompts, shaping verifiable goals, researching unfamiliar work, sequencing dependencies, and organizing Git commits. No onboarding workflow or repository state machine is required.",
     "developerName": "hoangnb24",
     "category": "Productivity",
     "capabilities": [
+      "Research",
       "Plan",
       "Write",
-      "Review",
-      "Learn"
+      "Commit"
     ],
     "websiteURL": "https://github.com/hoangnb24/skills",
     "privacyPolicyURL": "https://github.com/hoangnb24/skills/blob/main/docs/legal/privacy.md",
     "termsOfServiceURL": "https://github.com/hoangnb24/skills/blob/main/docs/legal/terms.md",
     "defaultPrompt": [
-      "Onboard this repository for Khuym and start with using-khuym.",
-      "Help me route a feature request through the full Khuym workflow.",
-      "Plan and validate a feature before we write code.",
-      "Create a visual learning artifact for this codebase or concept.",
-      "Group the current working tree into logical commits and push it.",
-      "Turn this priority list into a dependency-aware execution sequence."
+      "Improve this rough prompt; if it is a goal, grill me until success and stop conditions are verifiable.",
+      "Research this unfamiliar feature, then sequence the recommendation by dependency and risk.",
+      "Group the current working tree into logical commits and push it."
     ],
     "brandColor": "#0F766E"
   }

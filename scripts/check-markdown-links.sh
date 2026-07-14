@@ -15,12 +15,9 @@ targets = [
     repo_root / "README.md",
     repo_root / "CONTRIBUTING.md",
     repo_root / "AGENTS.md",
-    repo_root / "AGENTS.template.md",
-    repo_root / "docs" / "architecture" / "ARCHITECTURE.md",
 ]
 
-targets.extend(sorted((repo_root / "docs" / "examples").rglob("*.md")))
-targets.extend(sorted((repo_root / "docs" / "legal").rglob("*.md")))
+targets.extend(sorted((repo_root / "docs").rglob("*.md")))
 targets.extend(sorted((repo_root / "plugins" / "khuym").rglob("*.md")))
 
 link_pattern = re.compile(r"\[[^\]]+\]\(([^)]+)\)")

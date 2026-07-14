@@ -1,6 +1,6 @@
 ---
 name: sequence-execution-plan
-description: Break a goal, feature, incident, backlog, or rough implementation proposal into a dependency-aware execution plan. Use when Codex must distinguish business priority from execution order; identify outcomes, tasks, prerequisites, mitigations, blockers, and work that overlaps or is absorbed; compare direct, foundation-first, mitigation-first, merged, or parallel paths; define acceptance criteria and reconciliation triggers; or explain why lower-priority work must precede a higher-priority outcome without hiding unresolved risk.
+description: Build dependency-aware plans from goals, incidents, backlogs, or priorities. Use when priority conflicts with execution order and Codex must test prerequisites or mitigations, preserve absorbed-work traceability, or explain why lower-priority work happens first.
 ---
 
 # Sequence Execution Plan

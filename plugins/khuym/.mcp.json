@@ -1,24 +1,5 @@
 {
   "mcpServers": {
-    "gkg": {
-      "type": "http",
-      "url": "http://localhost:27495/mcp",
-      "includeTools": [
-        "list_projects",
-        "index_project",
-        "repo_map",
-        "search_codebase_definitions",
-        "get_references",
-        "get_definition",
-        "read_definitions"
-      ]
-    },
-    "MCP_DOCKER": {
-      "type": "stdio",
-      "command": "docker",
-      "args": ["mcp", "gateway", "run"],
-      "includeTools": ["resolve-library-id", "get-library-docs", "web_search_exa"]
-    },
     "exa": {
       "type": "http",
       "url": "https://mcp.exa.ai/mcp",
@@ -35,15 +16,6 @@
         "read_wiki_contents",
         "ask_question"
       ]
-    },
-    "morph-mcp": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@morphllm/morphmcp"],
-      "env": {
-        "ENABLED_TOOLS": "codebase_search"
-      },
-      "includeTools": ["codebase_search"]
     }
   }
 }

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Agent Creator"
-  short_description: "Scaffold repo-local agents with matched skills"
-  default_prompt: "Use $agent-creator to add a new persistent agent under .codex/agents for the current repo, first matching the best existing local skills and MCP servers before generating the agent TOML."
