@@ -1,7 +1,7 @@
 {
   "name": "khuym",
-  "version": "3.0.8",
-  "description": "Khuym: validate-first multi-agent skills for phase contracts, stories, swarming, execution, visual learning artifacts, and smart commits",
+  "version": "3.0.9",
+  "description": "Khuym: validate-first multi-agent skills for planning, sequencing, swarming, execution, visual learning artifacts, and smart commits",
   "author": {
     "name": "hoangnb24",
     "url": "https://github.com/hoangnb24"
@@ -21,7 +21,7 @@
   "interface": {
     "displayName": "Khuym",
     "shortDescription": "Validate-first skills for agentic software delivery",
-    "longDescription": "Bundles the Khuym workflow skills and standalone utilities for phase planning, story mapping, validation, swarming, review, visual learning artifacts, smart commits, and learning capture.",
+    "longDescription": "Bundles the Khuym workflow skills and standalone utilities for phase planning, dependency-aware sequencing, story mapping, validation, swarming, review, visual learning artifacts, smart commits, and learning capture.",
     "developerName": "hoangnb24",
     "category": "Productivity",
     "capabilities": [
@@ -38,7 +38,8 @@
       "Help me route a feature request through the full Khuym workflow.",
       "Plan and validate a feature before we write code.",
       "Create a visual learning artifact for this codebase or concept.",
-      "Group the current working tree into logical commits and push it."
+      "Group the current working tree into logical commits and push it.",
+      "Turn this priority list into a dependency-aware execution sequence."
     ],
     "brandColor": "#0F766E"
   }
