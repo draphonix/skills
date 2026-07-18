@@ -1,6 +1,6 @@
 # Xia Protocol
 
-Load this file only after `khuym:xia` has been selected.
+Load this file only after the `xia` skill has been selected.
 
 ## Best For
 

@@ -1,38 +1,12 @@
+.DS_Store
 node_modules/
 coverage/
-.DS_Store
-tests
-!standalone/**/scripts/
-!standalone/**/scripts/**
-package*
-tsconfig.json
-vitest.config.ts
+__pycache__/
+*.pyc
+.venv/
 
-# bv (beads viewer) local config and caches
-.bv/
-.beads
-.khuym
-.spike
-history
-!docs/
-docs/*
-!docs/architecture/
-docs/architecture/*
-!docs/architecture/ARCHITECTURE.md
-!docs/examples/
-docs/examples/*
-!docs/examples/golden-path.md
-!docs/evaluation/
-docs/evaluation/*
-!docs/evaluation/khuym-plugin-eval.md
-!docs/evaluation/khuym-swarming-hardening.md
-!docs/legal/
-!docs/legal/privacy.md
-!docs/legal/terms.md
-.spikes
+# Plugin Eval run outputs are local measurement artifacts. Keep the benchmark
+# configuration, but do not package generated reports or per-skill state.
 plugins/khuym/.plugin-eval/*
 !plugins/khuym/.plugin-eval/benchmark.json
-
-# Plugin Eval run outputs are local measurement artifacts. Keep the plugin-level
-# benchmark config above, but do not package per-skill benchmark state.
 plugins/khuym/skills/**/.plugin-eval/

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Refresh Project Docs"
-  short_description: "Refresh README and docs from repo state"
-  default_prompt: "Use $refresh-project-docs to update the README and project docs so they match the current code, commands, options, and features."

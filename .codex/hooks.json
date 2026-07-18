@@ -1,17 +1,5 @@
 {
   "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "startup|resume",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node .codex/hooks/khuym_session_start.mjs",
-            "statusMessage": "Khuym: session bootstrap"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "create_goal|set_goal|set_goals|goal",
@@ -20,27 +8,6 @@
             "type": "command",
             "command": "node .codex/hooks/goal_guard.mjs",
             "statusMessage": "Goal Guard: LLM goal review"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node .codex/hooks/khuym_pre_tool_use.mjs",
-            "statusMessage": "Khuym: shell guardrails"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node .codex/hooks/khuym_stop.mjs",
-            "statusMessage": "Khuym: end-of-turn check"
           }
         ]
       }

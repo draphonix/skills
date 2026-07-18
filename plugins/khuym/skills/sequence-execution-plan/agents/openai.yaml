@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sequence Execution Plan"
+  short_description: "Turn priorities into dependency-aware execution plans"
+  default_prompt: "Use $sequence-execution-plan to break this work into a safe, dependency-aware execution sequence."

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Concept Game Builder"
-  short_description: "Turn concepts into browser games"
-  default_prompt: "Use $concept-game-builder to design and build a browser game that teaches this topic through interactive play."

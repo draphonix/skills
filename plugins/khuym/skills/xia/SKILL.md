@@ -1,20 +1,6 @@
 ---
 name: xia
-description: Research-first feature discovery for unfamiliar, ambiguous, or high-risk implementation work. Use when Codex should map the real repo stack, find reusable local code, check upstream patterns, and verify current official docs before planning or implementing a feature.
-metadata:
-  dependencies:
-    exa:
-      kind: mcp_server
-      server_names: [exa]
-      config_sources: [global_codex_config, plugin_mcp_manifest]
-      missing_effect: degraded
-      reason: Xia uses Exa to research current official documentation and recent implementation guidance.
-    deepwiki:
-      kind: mcp_server
-      server_names: [deepwiki]
-      config_sources: [global_codex_config, plugin_mcp_manifest]
-      missing_effect: degraded
-      reason: Xia uses DeepWiki as a best-effort upstream pattern and repository-structure research path.
+description: Research unfamiliar implementation work before coding. Use when work is ambiguous, version-sensitive, or risky and requires repo mapping, local reuse, upstream patterns, or current docs.
 ---
 
 # Xia
@@ -74,4 +60,3 @@ Explain why the chosen path beats the next-best alternative.
 |---|---|
 | `references/xia-protocol.md` | Detailed research flow, tool roles, guardrails |
 | `references/research-brief-template.md` | Required brief structure |
-| `references/pressure-scenarios.md` | RED/GREEN validation scenarios |

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Animated Landing Pages"
-  short_description: "Build AI-generated animated sites"
-  default_prompt: "Use $animated-landing-pages to design and implement a premium animated landing page using AI-generated media, motion-first sections, and the current repo's frontend stack."

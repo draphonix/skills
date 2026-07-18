@@ -47,7 +47,6 @@ from __future__ import annotations
 
 import os
 import re
-import shutil
 import sys
 from pathlib import Path
 
@@ -95,20 +94,70 @@ for name, source_dir in skills:
         target_dir = target_root / name
         actions.append((target_name, name, source_dir, target_dir))
 
+current_sources = {source_dir.resolve() for _, source_dir in skills}
+stale_links: list[tuple[str, Path, Path]] = []
+
+for target_name, target_root in target_roots:
+    if not target_root.is_dir():
+        continue
+
+    for target_dir in target_root.iterdir():
+        if not target_dir.is_symlink():
+            continue
+
+        raw_target = Path(os.readlink(target_dir))
+        resolved_target = (
+            raw_target if raw_target.is_absolute() else target_dir.parent / raw_target
+        ).resolve(strict=False)
+
+        try:
+            resolved_target.relative_to(skills_root)
+        except ValueError:
+            continue
+
+        if resolved_target.parent != skills_root:
+            continue
+
+        if resolved_target not in current_sources:
+            stale_links.append((target_name, target_dir, resolved_target))
+
+conflicts = [
+    (target_name, name, target_dir)
+    for target_name, name, _, target_dir in actions
+    if target_dir.exists() and not target_dir.is_symlink()
+]
+
 if dry_run:
+    for target_name, target_dir, resolved_target in stale_links:
+        print(f"would unlink stale [{target_name}]: {target_dir} -> {resolved_target}")
     for target_name, name, source_dir, target_dir in actions:
-        print(f"would link [{target_name}] {name}: {target_dir} -> {source_dir}")
+        if target_dir.exists() and not target_dir.is_symlink():
+            print(f"would refuse non-symlink [{target_name}] {name}: {target_dir}")
+        else:
+            print(f"would link [{target_name}] {name}: {target_dir} -> {source_dir}")
     raise SystemExit(0)
+
+if conflicts:
+    details = "\n".join(
+        f"- [{target_name}] {name}: {target_dir}"
+        for target_name, name, target_dir in conflicts
+    )
+    raise SystemExit(f"Refusing to replace non-symlink skill targets:\n{details}")
 
 for _, target_root in target_roots:
     target_root.mkdir(parents=True, exist_ok=True)
 
+for target_name, target_dir, resolved_target in stale_links:
+    target_dir.unlink()
+    print(f"unlinked stale [{target_name}]: {target_dir} -> {resolved_target}")
+
 for target_name, name, source_dir, target_dir in actions:
-    if target_dir.is_symlink() or target_dir.exists():
-        if target_dir.is_dir() and not target_dir.is_symlink():
-            shutil.rmtree(target_dir)
-        else:
-            target_dir.unlink()
+    if target_dir.is_symlink():
+        target_dir.unlink()
+    elif target_dir.exists():
+        raise SystemExit(
+            f"Refusing to replace non-symlink [{target_name}] {name}: {target_dir}"
+        )
     os.symlink(source_dir, target_dir, target_is_directory=True)
     print(f"linked [{target_name}] {name}: {target_dir} -> {source_dir}")
 PY

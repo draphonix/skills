@@ -1,186 +1,104 @@
-# Creating Skills
+# Contributing Meta-Skills
 
-This guide covers the skill format, directory conventions, and how this repo packages skills for Codex plus optional raw skill mirrors for other agent runtimes.
+This repository packages independent, reusable meta-skills in the `khuym` Codex plugin.
 
-## Plugin Packaging Overview
+## Scope Test
 
-This repository is a Codex plugin repo. The installable Codex plugin is `khuym`.
+A skill belongs here only when it improves how an agent works across many repositories without requiring a shared lifecycle or state machine.
 
-- Codex plugin root: [`plugins/khuym/`](plugins/khuym/)
-- Codex plugin manifest: [`plugins/khuym/.codex-plugin/plugin.json`](plugins/khuym/.codex-plugin/plugin.json)
-- Repo marketplace: [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json)
+Ask these questions before adding one:
 
-## How Skills Work
+1. Can a user invoke it directly from an ordinary request?
+2. Can it finish without another Khuym skill?
+3. Does it avoid mandatory plugin-specific state, handoff files, issue trackers, or fixed phase gates?
+4. Is the behavior useful across multiple languages, frameworks, or project types?
+5. Does the skill add non-obvious reusable judgment instead of merely encoding one personal workflow?
 
-The canonical skill directories live under [`plugins/khuym/skills/`](plugins/khuym/skills).
+Concrete boundary:
 
-- Codex consumes the packaged plugin under [`plugins/khuym/.codex-plugin/plugin.json`](plugins/khuym/.codex-plugin/plugin.json), with the repo marketplace defined in [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json).
-- Other runtimes such as Claude Code can consume raw symlinked skills from `~/.claude/skills/*/SKILL.md` after mirroring the canonical tree with `bash scripts/sync-skills.sh --target claude`.
+- “Turn this vague idea into a verifiable goal” belongs because it works independently in almost any repo.
+- “After phase 3, update Khuym state and hand off to the swarm skill” does not belong because it only works inside a fixed workflow.
+- “Convert this one book format into one vendor's training pipeline” does not belong because it is a domain-specific automation, not a meta-skill.
 
-In both environments, the `description` field from the YAML frontmatter is the trigger text that determines when a skill is selected.
+## Canonical Layout
 
-## Documentation Checks
+```text
+plugins/khuym/
+├── .codex-plugin/plugin.json
+├── .mcp.json
+└── skills/
+    └── skill-name/
+        ├── SKILL.md
+        ├── agents/
+        │   └── openai.yaml
+        ├── references/       # optional, loaded only when needed
+        ├── scripts/          # optional, deterministic repeated work
+        └── assets/           # optional, copied into outputs
+```
 
-Markdown links in this repo should stay repository-relative and environment-agnostic. Do not commit absolute local filesystem paths such as `/Users/...` in rendered docs.
+Do not add `README.md`, `CREATION-LOG.md`, changelogs, or installation guides inside a skill directory. Put public repository documentation at the repository root or under `docs/`.
 
-Keep documentation links repository-relative and environment-agnostic.
+## SKILL.md
 
-This repo treats these as errors:
-- a Markdown link uses an absolute local path
-- a repository-relative Markdown link points to a missing target
+Use lowercase hyphenated folder names. The folder name must equal the skill's `name`.
 
-Run:
+```yaml
+---
+name: example-skill
+description: Explain what the skill does and the concrete requests that should trigger it.
+---
+
+# Example Skill
+
+Write concise imperative instructions here.
+```
+
+Keep frontmatter to `name` and `description`. Put all trigger information in `description`, because the body is loaded only after selection.
+
+Keep `SKILL.md` under 500 lines. Move detailed examples or protocols into one-level-deep `references/` files and link to them directly from `SKILL.md`.
+
+## Agent Metadata
+
+Each skill should include `agents/openai.yaml`:
+
+```yaml
+interface:
+  display_name: "Example Skill"
+  short_description: "One concise user-facing description"
+  default_prompt: "Use $example-skill to ..."
+```
+
+When the skill's purpose or trigger changes, check that these values still match.
+
+## Scripts
+
+Add a script only when the same deterministic logic would otherwise be rewritten repeatedly. Test every added or changed script.
+
+For example, `prompt-leverage/scripts/augment_prompt.py` is justified because it provides a repeatable first-pass transformation. A one-off shell command copied from a single project is not.
+
+## Validation
+
+Run the repository checks:
 
 ```bash
 bash scripts/check-markdown-links.sh
-```
-
-## SKILL.md Structure
-
-Every skill requires a `SKILL.md` file with YAML frontmatter and a markdown body:
-
-```yaml
----
-name: my-skill                      # public skill name shown to the agent
-description: >-                     # CRITICAL: this is the trigger text
-  One paragraph explaining when to use this skill.
-  Include concrete trigger phrases the user might say.
-  Claude matches user intent against this description.
----
-
-# My Skill
-
-Operational instructions go here. This body is loaded when the skill is invoked.
-
-## When to Use
-
-- Specific scenarios where this skill applies
-- Trigger phrases: "do X", "help with Y"
-
-## Process
-
-Step-by-step instructions Claude follows when executing this skill.
-
-## Red Flags
-
-Behaviors to watch for and correct during execution.
-```
-
-## Required Fields
-
-| Field | Purpose |
-|-------|---------|
-| `name` | Public skill identifier used by the agent; may include a namespace prefix such as `khuym:` |
-| `description` | Trigger text for skill matching. Include use cases and trigger phrases |
-
-## Optional Frontmatter Fields
-
-| Field | Example | Purpose |
-|-------|---------|---------|
-| `metadata.version` | `'1.0'` | Skill version tracking |
-| `metadata.ecosystem` | `khuym` | Group tag for related skills |
-| `metadata.type` | `core \| support \| meta` | Role classification |
-| `license` | `MIT` | License declaration |
-| `compatibility` | `opencode` | Cross-platform flag |
-| `allowed-tools` | `Read, Write, Bash` | Restrict available tools |
-| `model` | `claude-sonnet-4-20250514` | Preferred model |
-| `mode` | `ultrathink` | Thinking mode preference |
-| `references` | `[workers, pages]` | Auto-load reference subdirectories |
-
-## Directory Layout
-
-```
-skill-name/
-├── SKILL.md              ← REQUIRED
-├── references/           ← Supporting documents read at runtime
-│   ├── templates.md      ← Templates the skill tells Claude to load
-│   └── patterns.md       ← Reference patterns or examples
-├── scripts/              ← Executable scripts the skill invokes
-│   └── validate.sh
-├── agents/               ← Subagent configuration files
-│   └── reviewer.yaml
-└── README.md             ← Human-facing documentation (not loaded by Claude)
-```
-
-### Key conventions
-
-- **`references/`** — Files the skill explicitly tells Claude to read (e.g., "Load `references/template.md` now"). Claude does NOT auto-load these; the SKILL.md body must reference them.
-- **`scripts/`** — Shell scripts, Python scripts, or other executables the skill invokes via Bash.
-- **`agents/`** — YAML configs for subagent prompts the skill spawns.
-
-## Writing Effective Descriptions
-
-The `description` field is the most important part of a skill. Claude uses it to decide whether to invoke the skill.
-
-**Good description:**
-```yaml
-description: >-
-  Systematic debugging for blocked workers, test failures, build errors,
-  runtime crashes, and integration issues. Use when a build fails, a test
-  fails, a worker is stuck, or reviewing hands off with a failure.
-```
-
-**Bad description:**
-```yaml
-description: Helps with debugging things
-```
-
-Tips:
-- List concrete scenarios and trigger phrases
-- Include the verbs users would say ("debug", "fix", "diagnose")
-- Mention what the skill produces ("writes CONTEXT.md", "creates beads")
-
-## Installing For Testing
-
-Preferred Codex flow:
-
-```bash
-git clone https://github.com/hoangnb24/skills.git
-cd skills
-```
-
-Then:
-
-1. Add the repo marketplace from [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) in Codex
-2. Install the `khuym` plugin from that marketplace
-3. Restart Codex if the marketplace does not appear immediately
-
-For this repo, use the local marketplace flow: local clone -> local marketplace -> plugin install.
-
-## Adding a Skill to This Repo
-
-1. Create the directory under [`plugins/khuym/skills/`](plugins/khuym/skills):
-   ```bash
-   mkdir -p plugins/khuym/skills/my-skill/references
-   ```
-   Use a filesystem-safe folder name. If the public skill name needs a namespace such as `khuym:planning`, keep that in the `name` field and use an unprefixed folder such as `planning/`.
-
-2. Write `SKILL.md` with frontmatter and body
-
-3. Test by asking Codex or Claude something that matches your trigger description
-
-## Testing a Skill
-
-1. Install the local repo marketplace in Codex and install the `khuym` plugin
-2. Start a new Codex session
-3. Ask something that should trigger the skill
-4. Verify Codex discovers and invokes the skill
-5. Check that the operational instructions produce the expected behavior
-
-For repo-level verification, also run:
-
-```bash
-bash scripts/sync-skills.sh --dry-run
 bash scripts/sync-skills.sh --target all --dry-run
+python3 plugins/khuym/skills/prompt-leverage/scripts/test_augment_prompt.py
+node scripts/test-goal-guard-hook.mjs
 ```
 
-## Khuym-Specific Conventions
+Also validate every changed skill with the `skill-creator` `quick_validate.py` available in your Codex installation.
 
-Khuym ecosystem skills follow additional conventions:
+## Installation Test
 
-- **Chain position:** Each skill hands off to the next in the chain (exploring → planning → validating → ...)
-- **HARD-GATE blocks:** Non-negotiable behavioral constraints wrapped in `<HARD-GATE>` tags
-- **State updates:** Skills update `.khuym/STATE.md` and `.khuym/state.json` at phase transitions
-- **Scout-first startup:** On onboarded repos, skills should prefer `node .codex/khuym_status.mjs --json` as the first quick orientation step before opening deeper state files
-- **Red Flags section:** Every skill lists behaviors that should trigger immediate correction
-- **Handoff message:** Every skill ends with an explicit handoff stating which skill to invoke next
+1. Add [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) as a local marketplace.
+2. Install the `khuym` plugin.
+3. Start a fresh Codex session.
+4. Try one positive trigger and one nearby request that should not trigger the skill.
+
+Example for `sequence-execution-plan`:
+
+- Positive: “These priorities conflict with their prerequisites; give me a safe execution order.”
+- Negative: “Alphabetize these issue titles.”
+
+The positive request should produce dependency reasoning. The negative request should be answered directly without loading the skill.
