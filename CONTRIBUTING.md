@@ -1,22 +1,23 @@
-# Contributing Meta-Skills
+# Contributing Skills
 
-This repository packages independent, reusable meta-skills in the `khuym` Codex plugin.
+This repository packages independent, reusable meta-skills and cross-project tool skills in the `khuym` Codex plugin.
 
 ## Scope Test
 
-A skill belongs here only when it improves how an agent works across many repositories without requiring a shared lifecycle or state machine.
+A skill belongs here only when it improves how an agent works across many repositories or provides a reusable tool workflow without requiring a shared lifecycle or state machine.
 
 Ask these questions before adding one:
 
 1. Can a user invoke it directly from an ordinary request?
 2. Can it finish without another Khuym skill?
 3. Does it avoid mandatory plugin-specific state, handoff files, issue trackers, or fixed phase gates?
-4. Is the behavior useful across multiple languages, frameworks, or project types?
+4. Is the behavior useful across multiple languages, frameworks, project types, or artifacts?
 5. Does the skill add non-obvious reusable judgment instead of merely encoding one personal workflow?
 
 Concrete boundary:
 
 - “Turn this vague idea into a verifiable goal” belongs because it works independently in almost any repo.
+- “Create or edit a tldraw diagram through the installed app's local API” belongs because the workflow is reusable across projects and avoids machine-specific UI automation.
 - “After phase 3, update Khuym state and hand off to the swarm skill” does not belong because it only works inside a fixed workflow.
 - “Convert this one book format into one vendor's training pipeline” does not belong because it is a domain-specific automation, not a meta-skill.
 

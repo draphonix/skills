@@ -1,7 +1,7 @@
 {
   "name": "khuym",
-  "version": "4.0.0",
-  "description": "Khuym: focused meta-skills for prompting, goal shaping, research, execution sequencing, and smart commits",
+  "version": "4.1.0",
+  "description": "Khuym: independent skills for prompting, goals, research, execution, Git, and tldraw automation",
   "author": {
     "name": "hoangnb24",
     "url": "https://github.com/hoangnb24"
@@ -15,21 +15,24 @@
     "meta-skills",
     "prompting",
     "research",
-    "planning"
+    "planning",
+    "tldraw",
+    "diagramming"
   ],
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
-    "displayName": "Khuym Meta-Skills",
-    "shortDescription": "Portable meta-skills for stronger agent work",
-    "longDescription": "Five independent skills for improving prompts, shaping verifiable goals, researching unfamiliar work, sequencing dependencies, and organizing Git commits. No onboarding workflow or repository state machine is required.",
+    "displayName": "Khuym Skills",
+    "shortDescription": "Portable skills for stronger work and diagrams",
+    "longDescription": "Six independent skills: five improve prompting, goals, research, sequencing, and Git commits; one automates tldraw through its local Canvas API. No onboarding workflow or repository state machine is required.",
     "developerName": "hoangnb24",
     "category": "Productivity",
     "capabilities": [
       "Research",
       "Plan",
       "Write",
-      "Commit"
+      "Commit",
+      "Diagram"
     ],
     "websiteURL": "https://github.com/hoangnb24/skills",
     "privacyPolicyURL": "https://github.com/hoangnb24/skills/blob/main/docs/legal/privacy.md",

@@ -1,6 +1,6 @@
 # Khuym Plugin Architecture
 
-Khuym is a collection of independent meta-skills, not a software-delivery workflow.
+Khuym is a collection of independent reusable skills, not a software-delivery workflow. Five skills improve general agent work; `tldraw-api` automates one broadly useful visual tool.
 
 ## Canonical Sources
 
@@ -28,6 +28,7 @@ Raw mirrors created by `scripts/sync-skills.sh` point back to the canonical skil
 | `xia` | An unfamiliar or risky feature question | A research brief; it does not implement unless research is waived |
 | `sequence-execution-plan` | A goal, backlog, incident, or rough proposal | A dependency-aware execution plan; it does not create tracker state |
 | `smart-commits` | An existing Git working tree | Logical commits and an optional push; it does not implement features |
+| `tldraw-api` | A running tldraw Desktop canvas or requested `.tldraw` diagram | API-created canvas records, a saved file, and structural/visual verification; it does not require UI automation |
 
 These output boundaries prevent one skill from growing into a replacement workflow. For example, Xia stops at evidence and recommendation. The user can then plan normally, invoke `sequence-execution-plan`, or choose another path.
 
@@ -57,7 +58,7 @@ rough request ────────▶│ goal-griller  │
                        └─────────────────┘
 ```
 
-Every arrow is optional. A user asking only for a commit cleanup should enter directly at `smart-commits`.
+Every arrow is optional. A user asking only for a commit cleanup should enter directly at `smart-commits`. `tldraw-api` is an independent tool path and does not require this composition chain.
 
 ## External Services
 

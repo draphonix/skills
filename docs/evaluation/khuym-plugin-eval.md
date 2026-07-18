@@ -1,6 +1,6 @@
 # Khuym Plugin Evaluation
 
-This runbook checks that the Khuym plugin behaves as five independent meta-skills and does not recreate the retired workflow through routing or hidden repository requirements.
+This runbook checks that the Khuym plugin behaves as six independent skills and does not recreate the retired workflow through routing or hidden repository requirements.
 
 ## Static Checks
 
@@ -31,12 +31,13 @@ node scripts/khuym-plugin-eval.mjs benchmark plugins/khuym \
   --format markdown
 ```
 
-The scenarios test four positive routes and one negative boundary:
+The scenarios test five positive routes and one negative boundary:
 
 - a weak prompt routes to `prompt-leverage`
 - a vague autonomous objective routes to `goal-griller`
 - an unfamiliar feature routes to `xia`
 - conflicting priority and dependency order routes to `sequence-execution-plan`
+- a request to script an installed tldraw app routes to `tldraw-api`
 - a trivial alphabetization request routes to no Khuym skill
 
 ## What Failure Means
@@ -46,6 +47,7 @@ Examples:
 - If the vague goal is immediately executed, `goal-griller` failed its hard gate.
 - If Xia edits code before producing evidence, its research boundary failed.
 - If a plan orders work by priority labels alone, dependency reasoning failed.
+- If a tldraw task exposes the local bearer token, hardcodes a renderer hash, or falls back to mouse automation without necessity, API automation failed.
 - If any scenario demands plugin onboarding or shared workflow state, the retired workflow leaked back into the plugin.
 - If alphabetization triggers a skill, the plugin is over-routing.
 

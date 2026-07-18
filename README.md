@@ -1,6 +1,6 @@
-# Khuym Meta-Skills
+# Khuym Skills
 
-Khuym is a focused Codex plugin containing five independent meta-skills. It improves how an agent understands, researches, sequences, and lands work without imposing a repository workflow.
+Khuym is a focused Codex plugin containing five independent meta-skills and one tool-automation skill. It improves how an agent understands, researches, sequences, lands, and visualizes work without imposing a repository workflow.
 
 There is no required chain, onboarding step, plugin-specific state directory, issue graph, handoff file, or approval gate. Invoke one skill when its behavior helps; combine several only when the task genuinely needs them.
 
@@ -13,6 +13,7 @@ There is no required chain, onboarding step, plugin-specific state directory, is
 | `xia` | A feature is unfamiliar, ambiguous, version-sensitive, or risky | An evidence-labeled research brief based on local code, upstream patterns, and current official docs |
 | `sequence-execution-plan` | Priority order conflicts with dependency or risk order | A dependency-aware Now/Next/Later plan with explicit cause and effect |
 | `smart-commits` | Existing changes need to become a clean commit stack | Intent-based commits, appropriate validation, and a push when a destination exists |
+| `tldraw-api` | A tldraw canvas should be created, edited, scripted, or verified without mouse automation | A saved `.tldraw` diagram built through the authenticated local Canvas API |
 
 ## Concrete Examples
 
@@ -58,6 +59,20 @@ Cause and effect:
 2. Durable duplicate-charge prevention may require idempotency storage.
 3. Therefore the safe order can be mitigation → storage → durable fix → cleanup while the P0 remains open.
 
+### Automate a tldraw diagram
+
+Input:
+
+> Draw this architecture in tldraw without Computer Use.
+
+`tldraw-api` discovers the running desktop app, creates stable shape records, connects nodes with real bindings, saves the document, and verifies it with the canvas linter and a screenshot.
+
+Cause and effect:
+
+1. Mouse automation positions pixels but does not prove connector semantics.
+2. API-created bindings keep arrows attached when nodes move.
+3. Saving through tldraw plus lint and screenshot checks proves both structural and visual correctness.
+
 ## Optional Composition
 
 The skills can compose, but none requires another:
@@ -67,7 +82,8 @@ rough idea
   ├─ goal-griller             → make the outcome verifiable
   ├─ xia                     → reduce implementation uncertainty
   ├─ sequence-execution-plan → order the resulting work
-  └─ smart-commits           → land completed changes cleanly
+  ├─ smart-commits           → land completed changes cleanly
+  └─ tldraw-api              → create or edit a canvas directly
 ```
 
 For a simple request, use only the one relevant skill. For example, “group these changes into commits” should invoke `smart-commits` directly and should not trigger research or planning ceremony.

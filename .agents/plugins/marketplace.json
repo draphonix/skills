@@ -1,7 +1,7 @@
 {
   "name": "khuym",
   "interface": {
-    "displayName": "Khuym Meta-Skills"
+    "displayName": "Khuym Skills"
   },
   "plugins": [
     {

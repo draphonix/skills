@@ -1,0 +1,4 @@
+interface:
+  display_name: "tldraw API"
+  short_description: "Draw and automate tldraw through its local API"
+  default_prompt: "Use $tldraw-api to create or edit a tldraw diagram through the local Canvas API."

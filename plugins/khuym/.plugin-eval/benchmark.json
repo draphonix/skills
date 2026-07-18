@@ -1,7 +1,7 @@
 {
   "kind": "plugin-eval-benchmark",
   "schemaVersion": 2,
-  "version": 3,
+  "version": 4,
   "targetKind": "plugin",
   "targetName": "khuym",
   "runner": {
@@ -28,7 +28,7 @@
     ]
   },
   "notes": [
-    "This suite verifies independent meta-skill routing, not a cross-skill workflow.",
+    "This suite verifies independent skill routing, not a cross-skill workflow.",
     "No scenario may require plugin onboarding, shared state, issue graphs, reservations, or phase handoffs.",
     "Treat plugin-eval static score as structural evidence; scenario outcomes determine behavioral correctness."
   ],
@@ -120,6 +120,29 @@
         "The plan separates mitigation from durable resolution.",
         "The sequence explains payment pause, idempotency storage, durable fix, validation, and cleanup through cause and effect.",
         "The P0 remains open until its acceptance evidence is satisfied."
+      ]
+    },
+    {
+      "id": "tldraw-api-automation",
+      "title": "tldraw API automation",
+      "purpose": "Check whether an installed tldraw app is scripted through its authenticated local API instead of mouse automation.",
+      "userInput": "Create a new tldraw file showing Client -> API -> Database. Use the installed app's APIs, bind the arrows, save the file, and verify the result without Computer Use.",
+      "expectedSkillRouting": [
+        "khuym:tldraw-api"
+      ],
+      "expectedFilesOrCommands": [
+        "plugins/khuym/skills/tldraw-api/SKILL.md",
+        "plugins/khuym/skills/tldraw-api/scripts/tldraw_api.sh"
+      ],
+      "mustNot": [
+        "Do not expose or hardcode the local bearer token.",
+        "Do not hardcode a hashed renderer module filename or export key.",
+        "Do not use mouse-driven Computer Use when the Canvas API is available."
+      ],
+      "successChecklist": [
+        "The run discovers the active document and API state dynamically.",
+        "The two semantic arrows have start and end bindings.",
+        "The saved file is reopened or otherwise verified through shapes, bindings, lint, and a screenshot."
       ]
     },
     {
